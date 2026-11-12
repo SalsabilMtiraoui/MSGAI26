@@ -9,13 +9,16 @@ dist/
 venv/
 env/
 
-# Experiment outputs
-results/
-runs/
+# Experiment outputs (anchored to repo root with a leading slash, so they do
+# NOT also match packaged data dirs like src/injecteval/tasks/data/)
+/results/
+/runs/
+/data/
+/adapters/
 *.jsonl
 !src/injecteval/tasks/data/*.jsonl
-figures/*.png
-figures/*.pdf
+/figures/*.png
+/figures/*.pdf
 !figures/.gitkeep
 
 # Model / HF caches
@@ -33,10 +36,5 @@ hf_cache/
 # Secrets
 .env
 *.key
-
-# Training data + adapters
-data/
-adapters/
-runs/
 
 .ruff_cache/
