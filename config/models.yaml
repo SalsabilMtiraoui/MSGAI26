@@ -1,0 +1,67 @@
+# Named model presets. Reference by key from the CLI:
+#   injecteval sweep --target-preset qwen15 --attacker-preset qwen05
+#   injecteval sweep --target-presets qwen05 qwen15 qwen3b llama1b   # multi-target
+#
+# Small open-weight instruct models chosen to run on a single consumer GPU
+# (or a free Colab T4). Qwen2.5 and Qwen3 are gated-free; Llama needs HF access.
+
+presets:
+  # --- Attacker-sized (small, cheap) -----------------------------------
+  qwen05:
+    backend: hf
+    model: Qwen/Qwen2.5-0.5B-Instruct
+    max_new_tokens: 128
+  qwen3_06b:
+    backend: hf
+    model: Qwen/Qwen3-0.6B
+    max_new_tokens: 128
+    chat_template_kwargs: { enable_thinking: false }
+  llama1b:
+    backend: hf
+    model: meta-llama/Llama-3.2-1B-Instruct
+    max_new_tokens: 128
+
+  # --- Target-sized (bigger, more capable agent) -----------------------
+  qwen15:
+    backend: hf
+    model: Qwen/Qwen2.5-1.5B-Instruct
+    max_new_tokens: 256
+  qwen3b:
+    backend: hf
+    model: Qwen/Qwen2.5-3B-Instruct
+    max_new_tokens: 256
+  qwen3_4b:
+    backend: hf
+    model: Qwen/Qwen3-4B
+    max_new_tokens: 256
+    chat_template_kwargs: { enable_thinking: false }
+  llama3b:
+    backend: hf
+    model: meta-llama/Llama-3.2-3B-Instruct
+    max_new_tokens: 256
+
+  # --- API / local server (OpenAI-compatible: OpenAI, OpenRouter, vLLM, Ollama) --
+  gpt4omini:
+    backend: api
+    model: gpt-4o-mini
+    base_url: null          # null -> OPENAI_BASE_URL env or OpenAI default
+    max_new_tokens: 256
+  openrouter_qwen:
+    backend: api
+    model: qwen/qwen-2.5-7b-instruct
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+    max_new_tokens: 256
+  local_vllm:
+    backend: api
+    model: Qwen/Qwen2.5-7B-Instruct
+    base_url: http://localhost:8000/v1
+    max_new_tokens: 256
+
+  # --- vLLM offline engine (strongest inference opt; Linux/WSL2) --------
+  qwen05_vllm:
+    backend: vllm
+    model: Qwen/Qwen2.5-0.5B-Instruct
+    prefix_cache: true
+    gpu_memory_utilization: 0.45
+    max_new_tokens: 128

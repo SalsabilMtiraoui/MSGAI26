@@ -1,0 +1,67 @@
+# Default experiment configuration for InjectEval.
+#
+# This default uses the deterministic `sim` backend so the whole grid runs in
+# seconds on a laptop with no GPU and no API key. For real results, pass
+# --target-preset / --attacker-preset (see config/models.yaml) or edit `backend`.
+#
+#   injecteval sweep --config config/default.yaml
+#   injecteval sweep --config config/default.yaml --target-preset qwen15 --attacker-preset qwen05
+
+seed: 0
+output_dir: results
+suite: default
+
+# The model under attack (the target agent).
+target:
+  backend: sim            # sim | hf | vllm | api
+  model: sim-agent
+  temperature: 0.0
+  max_new_tokens: 256
+  use_kv_cache: true
+  quantization: none      # none | 8bit | 4bit
+  batch_size: 8
+
+# The attacker model (small + cheap: the whole point is cheap red-teaming).
+attacker_model:
+  backend: sim
+  model: sim-attacker
+  temperature: 0.9
+  max_new_tokens: 128
+  use_kv_cache: true
+  quantization: 4bit
+  batch_size: 16
+  # adapter: adapters/attacker-ei    # <- point here to use a fine-tuned attacker
+
+# The experiment grid. Every (defense x attacker) pair is run on every task.
+# `model_guard` is omitted here because it needs a downloaded HF classifier;
+# add it explicitly on the hf backend: --defenses ... model_guard
+grid:
+  defenses:
+    - none
+    - system_prompt
+    - sandwich
+    - spotlight
+    - regex_filter
+    - ppl_filter
+    - llm_guard         # broad heuristic input guard
+    - combo             # defense-in-depth (system_prompt + spotlight + sandwich)
+  attackers:
+    - naive_static      # baseline: single fixed template (must fail vs defenses)
+    - handcrafted       # baseline: library of known patterns, best-of
+    - best_of_n         # inference-time: sample N candidates, no feedback
+    - search            # adaptive: iterative refinement + filter-avoidance
+    - expert_iteration  # learning: reuse winning attacks as exemplars
+
+budget:
+  max_queries: 20
+  search_beam: 4
+
+# Inference-optimization sweep (systems contribution). Meaningful on hf/vllm.
+inference_sweep:
+  enabled: false
+  configs:
+    - { name: baseline,      use_kv_cache: false, quantization: none, batch_size: 1 }
+    - { name: kv_cache,      use_kv_cache: true,  quantization: none, batch_size: 1 }
+    - { name: kv_prefix,     use_kv_cache: true,  quantization: none, batch_size: 1, prefix_cache: true }
+    - { name: kv_batch,      use_kv_cache: true,  quantization: none, batch_size: 16 }
+    - { name: kv_batch_4bit, use_kv_cache: true,  quantization: 4bit, batch_size: 16 }

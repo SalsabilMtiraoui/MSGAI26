@@ -1,0 +1,29 @@
+# Attacker fine-tuning configuration (used by `injecteval collect` + `train`).
+# All data is generated from sandbox outcomes; no external attack corpus.
+
+collect:
+  suite: default
+  attacker: search                 # strategy used to generate candidate attacks
+  defenses: [system_prompt, sandwich, spotlight, llm_guard]
+  max_queries: 16
+  stealthy_only: false             # keep only (attack succeeds AND task intact)
+
+base_model: Qwen/Qwen2.5-0.5B-Instruct   # the small attacker to adapt
+
+sft:
+  epochs: 3
+  lr: 2.0e-4
+  lora_r: 16
+  quantization: none               # "4bit" -> QLoRA (fits a T4)
+
+dpo:
+  epochs: 2
+  lr: 5.0e-6
+  beta: 0.1
+  init_adapter: adapters/attacker-sft   # warm-start DPO from the SFT adapter
+
+expert_iteration:
+  rounds: 3
+  train_defenses: [system_prompt, sandwich]
+  heldout_defenses: [spotlight, regex_filter]   # measures generalization
+  max_queries: 10

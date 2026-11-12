@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "injecteval"
+version = "0.1.0"
+description = "Efficient automated red-teaming for indirect prompt injection against defended LLM agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "MSGAI26 Group" },
+]
+keywords = [
+    "prompt-injection",
+    "llm-security",
+    "red-teaming",
+    "agent-security",
+    "inference-optimization",
+]
+
+# Core dependencies are intentionally light so the full pipeline runs on a
+# laptop (CPU) using the deterministic `sim` backend. Heavy backends are extras.
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Local open-weight models (Qwen2.5, Llama-3.2, ...) via Hugging Face.
+hf = [
+    "torch>=2.1",
+    "transformers>=4.46",
+    "accelerate>=0.33",
+]
+# Attacker fine-tuning (SFT / DPO / expert iteration) via TRL + PEFT.
+train = [
+    "torch>=2.1",
+    "transformers>=4.46",
+    "accelerate>=0.33",
+    "peft>=0.13",
+    "trl>=0.12",
+    "datasets>=3.0",
+]
+# Offline vLLM engine (Linux/WSL2) for the strongest inference optimizations.
+vllm = [
+    "vllm>=0.6",
+]
+# 4-bit / 8-bit quantization for the inference-optimization experiments.
+quant = [
+    "bitsandbytes>=0.43; platform_system == 'Linux'",
+]
+# OpenAI-compatible HTTP backend (also works with vLLM / Ollama / TGI servers).
+api = [
+    "openai>=1.40",
+]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.5",
+]
+# Optional learned input guard (model_guard defense).
+guard = [
+    "torch>=2.1",
+    "transformers>=4.46",
+]
+
+[project.scripts]
+injecteval = "injecteval.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+injecteval = ["tasks/data/*.json", "tasks/data/*.jsonl"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]   # pycodestyle errors, pyflakes, import sorting
+ignore = ["E501"]          # long lines (docstrings, injection phrases, tables)

@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Experiment outputs
+results/
+runs/
+*.jsonl
+!src/injecteval/tasks/data/*.jsonl
+figures/*.png
+figures/*.pdf
+!figures/.gitkeep
+
+# Model / HF caches
+.cache/
+hf_cache/
+*.safetensors
+*.bin
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets
+.env
+*.key
+
+# Training data + adapters
+data/
+adapters/
+runs/
+
+.ruff_cache/

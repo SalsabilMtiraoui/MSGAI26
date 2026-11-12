@@ -1,0 +1,13 @@
+# Core (enough to run the full pipeline with the deterministic `sim` backend)
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+pyyaml>=6.0
+
+# --- Optional backends / training (install via extras, see pyproject.toml) ---
+# Real local models:              pip install -e ".[hf]"       (+ ".[quant]" for 4/8-bit)
+# Attacker fine-tuning (LoRA):    pip install -e ".[train]"
+# Offline vLLM engine:            pip install -e ".[vllm]"
+# OpenAI-compatible API backend:  pip install -e ".[api]"
+# Learned input guard:            pip install -e ".[guard]"
+# Dev (tests + lint):             pip install -e ".[dev]"

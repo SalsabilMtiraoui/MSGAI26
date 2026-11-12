@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" font-family="Helvetica, Arial, sans-serif">
+  <rect width="980" height="520" fill="#ffffff"/>
+  <text x="490" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1a1a1a">
+    InjectEval: efficient automated red-teaming of defended LLM agents
+  </text>
+  <text x="490" y="56" text-anchor="middle" font-size="13" fill="#6b6b6b">
+    A small attacker model searches for injections that hijack a tool-using agent; a ground-truth judge scores attack success and stealth.
+  </text>
+
+  <!-- Attacker box -->
+  <rect x="40" y="96" width="250" height="180" rx="10" fill="#f4f9f6" stroke="#009E73" stroke-width="2"/>
+  <text x="165" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#00684d">ATTACKER (red team)</text>
+  <text x="165" y="142" text-anchor="middle" font-size="12" fill="#333">Strategy: naive / handcrafted /</text>
+  <text x="165" y="158" text-anchor="middle" font-size="12" fill="#333">search / expert-iteration</text>
+  <rect x="64" y="176" width="202" height="76" rx="8" fill="#ffffff" stroke="#9bd3bf" stroke-width="1.5"/>
+  <text x="165" y="196" text-anchor="middle" font-size="12" font-weight="600" fill="#00684d">Small attacker LLM (0.5-1B)</text>
+  <text x="165" y="214" text-anchor="middle" font-size="11" fill="#555">+ inference opt:</text>
+  <text x="165" y="230" text-anchor="middle" font-size="11" fill="#555">KV-cache · 4-bit · batching</text>
+  <text x="165" y="246" text-anchor="middle" font-size="11" fill="#555">(cheap, many queries)</text>
+
+  <!-- Injection arrow -->
+  <line x1="290" y1="150" x2="380" y2="150" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="335" y="140" text-anchor="middle" font-size="11" fill="#444">injection</text>
+
+  <!-- Defense + Agent box -->
+  <rect x="380" y="96" width="270" height="260" rx="10" fill="#f3f7fb" stroke="#2166ac" stroke-width="2"/>
+  <text x="515" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#15457a">TARGET AGENT (defended)</text>
+
+  <rect x="402" y="134" width="226" height="52" rx="8" fill="#fff" stroke="#9db8d6" stroke-width="1.5"/>
+  <text x="515" y="154" text-anchor="middle" font-size="12" font-weight="600" fill="#15457a">DEFENSE</text>
+  <text x="515" y="172" text-anchor="middle" font-size="10.5" fill="#555">system-prompt · sandwich · spotlight · filters</text>
+
+  <rect x="402" y="196" width="226" height="60" rx="8" fill="#fff" stroke="#9db8d6" stroke-width="1.5"/>
+  <text x="515" y="216" text-anchor="middle" font-size="12" font-weight="600" fill="#15457a">Plan-and-execute agent</text>
+  <text x="515" y="234" text-anchor="middle" font-size="11" fill="#555">target LLM reads untrusted data,</text>
+  <text x="515" y="249" text-anchor="middle" font-size="11" fill="#555">emits tool-call plan</text>
+
+  <rect x="402" y="266" width="226" height="74" rx="8" fill="#fff" stroke="#9db8d6" stroke-width="1.5"/>
+  <text x="515" y="286" text-anchor="middle" font-size="12" font-weight="600" fill="#15457a">Sandbox workspace (tools)</text>
+  <text x="515" y="304" text-anchor="middle" font-size="11" fill="#555">read_email · read_document</text>
+  <text x="515" y="320" text-anchor="middle" font-size="11" fill="#555">send_email · write_note (all fake)</text>
+
+  <!-- arrow to judge -->
+  <line x1="650" y1="226" x2="740" y2="226" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="695" y="216" text-anchor="middle" font-size="11" fill="#444">env state</text>
+
+  <!-- Judge + metrics -->
+  <rect x="740" y="96" width="200" height="130" rx="10" fill="#fdf6ec" stroke="#E69F00" stroke-width="2"/>
+  <text x="840" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#9a6a00">JUDGE (ground truth)</text>
+  <text x="840" y="144" text-anchor="middle" font-size="11.5" fill="#444">attack success?</text>
+  <text x="840" y="162" text-anchor="middle" font-size="11.5" fill="#444">(forbidden action in sandbox)</text>
+  <text x="840" y="184" text-anchor="middle" font-size="11.5" fill="#444">utility preserved?</text>
+  <text x="840" y="202" text-anchor="middle" font-size="11.5" fill="#444">= stealthy success</text>
+
+  <rect x="740" y="246" width="200" height="110" rx="10" fill="#fafafa" stroke="#888" stroke-width="2"/>
+  <text x="840" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#333">METRICS</text>
+  <text x="840" y="292" text-anchor="middle" font-size="11.5" fill="#444">quality: ASR, stealthy ASR</text>
+  <text x="840" y="310" text-anchor="middle" font-size="11.5" fill="#444">cost: queries-to-success,</text>
+  <text x="840" y="326" text-anchor="middle" font-size="11.5" fill="#444">attacker tokens, latency,</text>
+  <text x="840" y="342" text-anchor="middle" font-size="11.5" fill="#444">throughput (tok/s)</text>
+
+  <!-- feedback loop judge -> attacker -->
+  <path d="M 790 226 L 790 400 L 165 400 L 165 276" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowred)"/>
+  <text x="470" y="418" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="600">
+    reward signal: keep winning injections, avoid filtered patterns  (search / expert iteration)
+  </text>
+
+  <!-- backend note -->
+  <rect x="40" y="446" width="900" height="52" rx="8" fill="#f7f7f7" stroke="#ddd"/>
+  <text x="56" y="468" font-size="11.5" fill="#555" font-weight="600">Backends (same code):</text>
+  <text x="56" y="486" font-size="11.5" fill="#555">
+    sim = deterministic, no-GPU (feature/defense model, for CI + fast iteration)   ·   hf = local Qwen/Llama   ·   api = OpenAI-compatible (vLLM/Ollama)
+  </text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowred" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#c0392b"/>
+    </marker>
+  </defs>
+</svg>
