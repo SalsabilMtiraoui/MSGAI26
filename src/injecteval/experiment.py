@@ -58,7 +58,7 @@ def _evaluate_factory(agent: Agent, task, defense_name: str):
     return evaluate
 
 
-def run_grid(cfg: RunConfig, progress: bool = True) -> List[Dict]:
+def run_grid(cfg: RunConfig, progress: bool = True, checkpoint: Optional[str] = None) -> List[Dict]:
     tasks = load_suite(cfg.suite)
     attacker_cfg = _mk_cfg(cfg.attacker_model, "sim")
     records: List[Dict] = []
@@ -125,6 +125,12 @@ def run_grid(cfg: RunConfig, progress: bool = True) -> List[Dict]:
         target.close()
         for ab in attacker_backends.values():
             ab.close()
+        # Checkpoint after each target model, so a later crash never loses the
+        # targets already completed.
+        if checkpoint:
+            save_records(records, checkpoint)
+            if progress:
+                print(f"  [checkpoint] {len(records)} records -> {checkpoint}")
     return records
 
 

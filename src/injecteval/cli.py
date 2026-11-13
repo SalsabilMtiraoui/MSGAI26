@@ -70,8 +70,8 @@ def cmd_sweep(args) -> None:
     print(f"  defenses={run_cfg.defenses}")
     print(f"  attackers={run_cfg.attackers}  budget={run_cfg.max_queries}")
 
-    records = run_grid(run_cfg)
     out = args.out or os.path.join(run_cfg.output_dir, "run.jsonl")
+    records = run_grid(run_cfg, checkpoint=out)  # checkpointed after each target
     save_records(records, out)
     print(f"\nWrote {len(records)} records -> {out}")
     _print_table(summary_table(records))

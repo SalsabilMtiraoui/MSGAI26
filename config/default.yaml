@@ -28,7 +28,7 @@ attacker_model:
   temperature: 0.9
   max_new_tokens: 128
   use_kv_cache: true
-  quantization: 4bit
+  quantization: none      # fp16 on GPU. 4bit (QLoRA) needs bitsandbytes = Linux/WSL2 only
   batch_size: 16
   # adapter: adapters/attacker-ei    # <- point here to use a fine-tuned attacker
 
