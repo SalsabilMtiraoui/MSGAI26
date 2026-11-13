@@ -108,7 +108,7 @@ class RAGTarget:
                 "Content-Type": "application/json",
             },
             json={
-                "model": self.model,
+                "model": result.get("model", self.model),
                 "messages": messages,
                 "temperature": 0,
             },
