@@ -25,10 +25,11 @@ def run_one(question, attack, defense):
     time.sleep(PAUSE)
     return judge(result, poisoned=poisoned), result["answer"], result["model"]
 
-def run_grid(questions, defenses=("none", "prompt", "filter", "both")):
+def run_grid(questions, defenses=("none", "prompt", "filter", "both"), attacks=None):
+    attacks = attacks or ["clean", *INJECTIONS]
     rows = []
     for defense in defenses:
-        for attack in ["clean", *INJECTIONS]:
+        for attack in attacks:
             for item in questions:
                 q = item["question"] if isinstance(item, dict) else item
                 print(defense, attack, q[:40])
